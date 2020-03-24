@@ -116,7 +116,7 @@ public class LizzieFrame extends MainFrame {
   private long lastPlayouts = 0;
   public boolean isDrawVisitsInTitle = true;
   RightClickMenu rightClickMenu;
-  
+
   private JPanel treePanel;
   private JTextArea commentArea;
 
@@ -158,36 +158,36 @@ public class LizzieFrame extends MainFrame {
         };
 
 
-    
+
     JPanel rightPanel  = new JPanel();
     rightPanel.setLayout(new GridLayout(2, 1));
-    
+
     treePanel = new JPanel() {
       private BufferedImage bgImage = null;
-      
+
       @Override
       protected void paintComponent(Graphics g) {
-        if (Lizzie.config.showVariationGraph) {
+        if (Lizzie.config.showVariationGraph && Lizzie.board != null) {
           int width = treePanel.getWidth();
           int height = treePanel.getHeight();
-          
+
           BufferedImage variationsGraphics = new BufferedImage(width, height, TYPE_INT_ARGB);
           Graphics2D varG = (Graphics2D) variationsGraphics.getGraphics();
-          
+
           if (cachedBackground != null) {
             if (bgImage == null) {
               bgImage = new BufferedImage(width, height, TYPE_INT_ARGB);
               filter20.filter(cachedBackground.getSubimage(0, 0, width, height), bgImage);
-            }            
+            }
             varG.drawImage(bgImage, 0, 0, null);
           }
           variationTree.draw(varG, 0, 0, width, height);
           g.drawImage(variationsGraphics, 0, 0, null);
         }
       }
-      
+
     };
-    
+
     commentArea = new JTextArea("");
     commentArea.setWrapStyleWord(true);
     commentArea.setLineWrap(true);
@@ -195,29 +195,29 @@ public class LizzieFrame extends MainFrame {
     commentArea.setFocusable(false);
     commentArea.setBackground(Color.black);
     commentArea.setForeground(Color.white);
-    
+
     JScrollPane scrollPane = new JScrollPane(commentArea);
     scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     scrollPane.setBackground(Color.BLACK);
-    
-    rightPanel.setPreferredSize(new Dimension(300, 0));    
-    
+
+    rightPanel.setPreferredSize(new Dimension(300, 0));
+
     rightPanel.add(treePanel);
     rightPanel.add(scrollPane);
-    
+
     JPanel mainContentPane = new JPanel();
     mainContentPane.setLayout(new GridBagLayout());
-    
+
     GridBagConstraints gc = new GridBagConstraints();
     gc.weightx = 1;
     gc.weighty = 1.0;
     gc.fill = GridBagConstraints.BOTH;
     mainContentPane.add(mainPanel, gc);
-    
+
     gc.weightx = 0.1;
     mainContentPane.add(rightPanel, gc);
-    
+
     getContentPane().add(mainContentPane);
     mainPanel.setTransferHandler(Utils.transFile);
     mainPanel.setFocusable(true);
@@ -253,7 +253,7 @@ public class LizzieFrame extends MainFrame {
     mainPanel.addKeyListener(input);
     mainPanel.addMouseWheelListener(input);
     mainPanel.addMouseMotionListener(input);
-    
+
     treePanel.addMouseListener(input);
     treePanel.addKeyListener(input);
     treePanel.addMouseWheelListener(input);
@@ -680,7 +680,7 @@ public class LizzieFrame extends MainFrame {
           drawMoveStatistics(g, statx, staty, statw, stath);
           winrateGraph.draw(g, grx, gry, grw, grh);
         }
-                
+
         if (Lizzie.config.showSubBoard) {
           try {
             subBoardRenderer.setLocation(subBoardX, subBoardY);

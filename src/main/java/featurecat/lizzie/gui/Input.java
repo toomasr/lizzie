@@ -561,6 +561,10 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
 
   @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
+    if (Lizzie.board == null) {
+      return;
+    }
+
     if (Lizzie.frame.processCommentMouseWheelMoved(e)) {
       return;
     }
