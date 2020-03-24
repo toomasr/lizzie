@@ -2,18 +2,17 @@
 ![screenshot](https://raw.githubusercontent.com/featurecat/lizzie/master/screenshot0.7.jpg?raw=true)
 
 Lizzie is a graphical interface allowing the user to analyze games in
-real time using [Leela Zero](https://github.com/gcp/leela-zero). You
-need Java 8 or higher to run this program.
+real time using different AI engines.
 
-See the [Wiki](https://github.com/featurecat/lizzie/wiki) for learning more.
+Lizzie comes bundled with the [Leela Zero](https://github.com/gcp/leela-zero) Engine when you download Lizzie from the Releases page.
 
-[![Build Status](https://travis-ci.org/featurecat/lizzie.svg?branch=master)](https://travis-ci.org/featurecat/lizzie?branch=master)
+Lizzie requires Java 8 or later to run.
 
+## Running a Release
 
-## Running a release
-
-Just follow the instructions in the provided readme in the
-[release](https://github.com/featurecat/lizzie/releases/tag/0.7.2).
+Every [release](https://github.com/featurecat/lizzie/releases/tag/0.7.2) has a
+`README.txt` file in the archive. Follow the steps in that file
+for a complete setup guide.
 
 The first run may take a while because Leela Zero needs to set up the
 OpenCL tunings. Just hang tight, and wait for it to finish, then you
@@ -22,6 +21,8 @@ your own tunings, as this will speed up the process. Do this by copying
 any `leelaz_opencl_tuning` file you have into the directory.
 
 ## Building from source
+
+[![Build Status](https://travis-ci.org/featurecat/lizzie.svg?branch=master)](https://travis-ci.org/featurecat/lizzie?branch=master)
 
 ### Building Leela Zero
 
