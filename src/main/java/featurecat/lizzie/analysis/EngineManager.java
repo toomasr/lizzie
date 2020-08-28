@@ -29,7 +29,6 @@ public class EngineManager {
     Leelaz lz = new Leelaz(engineCommand);
     Lizzie.leelaz = lz;
     Lizzie.board = lz.board;
-    lz.startEngine();
     lz.preload = true;
     engineList = new ArrayList<Leelaz>();
     engineList.add(lz);
@@ -79,7 +78,7 @@ public class EngineManager {
             })
         .start();
   }
-
+  
   /**
    * Switch the Engine by index number
    *

@@ -1845,6 +1845,12 @@ public class ConfigDialog extends JDialog {
               engineLine = ep.commandLine;
             }
           }
+          else {
+            engineLine = enginePath;
+          }
+        }
+        else {
+          engineLine = enginePath;
         }
       }
     }
