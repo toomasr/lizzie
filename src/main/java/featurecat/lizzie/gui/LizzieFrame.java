@@ -5,6 +5,15 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import com.jhlabs.image.GaussianFilter;
+import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.Leelaz;
+import featurecat.lizzie.analysis.MoveData;
+import featurecat.lizzie.analysis.YaZenGtp;
+import featurecat.lizzie.rules.Board;
+import featurecat.lizzie.rules.BoardData;
+import featurecat.lizzie.rules.SGFParser;
+import featurecat.lizzie.util.Utils;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,25 +47,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
-
 import org.json.JSONArray;
-
-import com.jhlabs.image.GaussianFilter;
-
-import featurecat.lizzie.Lizzie;
-import featurecat.lizzie.analysis.Leelaz;
-import featurecat.lizzie.analysis.MoveData;
-import featurecat.lizzie.analysis.YaZenGtp;
-import featurecat.lizzie.rules.Board;
-import featurecat.lizzie.rules.BoardData;
-import featurecat.lizzie.rules.SGFParser;
-import featurecat.lizzie.util.Utils;
 
 /** The window used to display the game. */
 public class LizzieFrame extends MainFrame {
@@ -157,36 +153,34 @@ public class LizzieFrame extends MainFrame {
           }
         };
 
-
-
-    JPanel rightPanel  = new JPanel();
+    JPanel rightPanel = new JPanel();
     rightPanel.setLayout(new GridLayout(2, 1));
 
-    treePanel = new JPanel() {
-      private BufferedImage bgImage = null;
+    treePanel =
+        new JPanel() {
+          private BufferedImage bgImage = null;
 
-      @Override
-      protected void paintComponent(Graphics g) {
-        if (Lizzie.config.showVariationGraph && Lizzie.board != null) {
-          int width = treePanel.getWidth();
-          int height = treePanel.getHeight();
+          @Override
+          protected void paintComponent(Graphics g) {
+            if (Lizzie.config.showVariationGraph && Lizzie.board != null) {
+              int width = treePanel.getWidth();
+              int height = treePanel.getHeight();
 
-          BufferedImage variationsGraphics = new BufferedImage(width, height, TYPE_INT_ARGB);
-          Graphics2D varG = (Graphics2D) variationsGraphics.getGraphics();
+              BufferedImage variationsGraphics = new BufferedImage(width, height, TYPE_INT_ARGB);
+              Graphics2D varG = (Graphics2D) variationsGraphics.getGraphics();
 
-          if (cachedBackground != null) {
-            if (bgImage == null) {
-              bgImage = new BufferedImage(width, height, TYPE_INT_ARGB);
-              filter20.filter(cachedBackground.getSubimage(0, 0, width, height), bgImage);
+              if (cachedBackground != null) {
+                if (bgImage == null) {
+                  bgImage = new BufferedImage(width, height, TYPE_INT_ARGB);
+                  filter20.filter(cachedBackground.getSubimage(0, 0, width, height), bgImage);
+                }
+                varG.drawImage(bgImage, 0, 0, null);
+              }
+              variationTree.draw(varG, 0, 0, width, height);
+              g.drawImage(variationsGraphics, 0, 0, null);
             }
-            varG.drawImage(bgImage, 0, 0, null);
           }
-          variationTree.draw(varG, 0, 0, width, height);
-          g.drawImage(variationsGraphics, 0, 0, null);
-        }
-      }
-
-    };
+        };
 
     commentArea = new JTextArea("");
     commentArea.setWrapStyleWord(true);

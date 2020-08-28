@@ -1,5 +1,9 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.rules.BoardHistoryList;
+import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.util.Utils;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -8,11 +12,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Optional;
-
-import featurecat.lizzie.Lizzie;
-import featurecat.lizzie.rules.BoardHistoryList;
-import featurecat.lizzie.rules.BoardHistoryNode;
-import featurecat.lizzie.util.Utils;
 
 public class VariationTree {
 
@@ -46,12 +45,10 @@ public class VariationTree {
       int variationNumber,
       boolean isMain,
       boolean calc) {
-    
+
     if (!calc) {
-      if (isMain)
-        g.setColor(Color.white);
-      else
-        g.setColor(Color.gray.brighter());
+      if (isMain) g.setColor(Color.white);
+      else g.setColor(Color.gray.brighter());
     }
 
     // Finds depth on leftmost variation of this tree
