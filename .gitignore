@@ -19,3 +19,4 @@ target
 leelaz_opencl_tuning
 *.sh
 *.jar
+gtp_logs
