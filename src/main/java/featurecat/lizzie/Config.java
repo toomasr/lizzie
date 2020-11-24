@@ -58,6 +58,7 @@ public class Config {
   public boolean showKataGoEstimateOnSubboard = true;
   public boolean showKataGoEstimateOnMainboard = true;
   public String kataGoEstimateMode = "small+dead";
+  public boolean kataGoEstimateBlend = true;
 
   public boolean showStatus = true;
   public boolean showBranch = true;
@@ -112,6 +113,7 @@ public class Config {
   public String gtpConsoleStyle = "";
   private final String defaultGtpConsoleStyle =
       "body {background:#000000; color:#d0d0d0; font-family:Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace; margin:4px;} .command {color:#ffffff;font-weight:bold;} .winrate {color:#ffffff;font-weight:bold;} .coord {color:#ffffff;font-weight:bold;}";
+  public boolean notRefreshVariation = false;
 
   private JSONObject loadAndMergeConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -220,6 +222,7 @@ public class Config {
     appendWinrateToComment = uiConfig.optBoolean("append-winrate-to-comment");
     holdBestMovesToSgf = uiConfig.optBoolean("hold-bestmoves-to-sgf", true);
     showBestMovesByHold = uiConfig.optBoolean("show-bestmoves-by-hold", true);
+    notRefreshVariation = uiConfig.optBoolean("not-refresh-variation", false);
     showCoordinates = uiConfig.optBoolean("show-coordinates");
     replayBranchIntervalSeconds = uiConfig.optDouble("replay-branch-interval-seconds", 1.0);
     colorByWinrateInsteadOfVisits = uiConfig.optBoolean("color-by-winrate-instead-of-visits");
@@ -241,6 +244,7 @@ public class Config {
     showKataGoEstimateOnSubboard = uiConfig.optBoolean("show-katago-estimate-onsubboard", true);
     showKataGoEstimateOnMainboard = uiConfig.optBoolean("show-katago-estimate-onmainboard", true);
     kataGoEstimateMode = uiConfig.optString("katago-estimate-mode", "small+dead");
+    kataGoEstimateBlend = uiConfig.optBoolean("katago-estimate-blend", true);
     showWinrateInSuggestion = uiConfig.optBoolean("show-winrate-in-suggestion", true);
     showPlayoutsInSuggestion = uiConfig.optBoolean("show-playouts-in-suggestion", true);
     showScoremeanInSuggestion = uiConfig.optBoolean("show-scoremean-in-suggestion", true);
@@ -385,6 +389,7 @@ public class Config {
 
   public void toggleKataGoEstimate() {
     showKataGoEstimate = !showKataGoEstimate;
+    uiConfig.put("show-katago-estimate", showKataGoEstimate);
   }
 
   public void cycleKataGoEstimateMode() {
@@ -412,6 +417,12 @@ public class Config {
         kataGoEstimateMode = "small";
         break;
     }
+    uiConfig.put("katago-estimate-mode", kataGoEstimateMode);
+  }
+
+  public void toggleKataGoEstimateBlend() {
+    kataGoEstimateBlend = !kataGoEstimateBlend;
+    uiConfig.put("katago-estimate-blend", kataGoEstimateBlend);
   }
 
   public void toggleShowStatus() {
@@ -546,6 +557,7 @@ public class Config {
     ui.put("show-katago-estimate-onsubboard", true);
     ui.put("show-katago-estimate-onmainboard", true);
     ui.put("katago-estimate-mode", "small");
+    ui.put("katago-estimate-blend", true);
     config.put("ui", ui);
     return config;
   }

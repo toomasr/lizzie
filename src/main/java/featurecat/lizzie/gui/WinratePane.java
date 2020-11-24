@@ -15,7 +15,7 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 
@@ -52,7 +52,14 @@ public class WinratePane extends LizziePane {
         });
 
     addMouseMotionListener(
-        new MouseMotionAdapter() {
+        new MouseMotionListener() {
+          @Override
+          public void mouseMoved(MouseEvent e) {
+            if (Lizzie.config.showSubBoard) {
+              Lizzie.frame.clearIsMouseOverSub();
+            }
+          }
+
           @Override
           public void mouseDragged(MouseEvent e) {
             onMouseDragged(e.getX(), e.getY());
@@ -123,6 +130,12 @@ public class WinratePane extends LizziePane {
     Leelaz.WinrateStats stats = Lizzie.leelaz.getWinrateStats();
     double curWR = stats.maxWinrate; // winrate on this move
     boolean validWinrate = (stats.totalPlayouts > 0); // and whether it was actually calculated
+    if (!validWinrate) {
+      // ref. drawMoveStatistics() in LizzieFrame.java
+      curWR = Lizzie.board.getHistory().getData().winrate;
+      validWinrate = Lizzie.board.getHistory().getData().getPlayouts() > 0;
+    }
+    boolean validScore = validWinrate;
     if (Lizzie.frame.isPlayingAgainstLeelaz
         && Lizzie.frame.playerIsBlack == !Lizzie.board.getHistory().getData().blackToPlay) {
       validWinrate = false;
@@ -172,7 +185,7 @@ public class WinratePane extends LizziePane {
     setPanelFont(g, (int) (min(width, height) * 0.2));
 
     String text = "";
-    if (Lizzie.leelaz.isKataGo) {
+    if (Lizzie.leelaz.isKataGo && validScore) {
       double score = Lizzie.leelaz.scoreMean;
       if (Lizzie.board.getHistory().isBlacksTurn()) {
         if (Lizzie.config.showKataGoBoardScoreMean) {

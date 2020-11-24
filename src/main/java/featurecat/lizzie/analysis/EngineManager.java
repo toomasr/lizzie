@@ -78,7 +78,7 @@ public class EngineManager {
             })
         .start();
   }
-  
+
   /**
    * Switch the Engine by index number
    *
@@ -86,6 +86,7 @@ public class EngineManager {
    */
   public void switchEngine(int index) {
     if (index == this.currentEngineNo || index > this.engineList.size()) return;
+    Leelaz.engineIndex++;
     Leelaz newEng = engineList.get(index);
     if (newEng == null) return;
 

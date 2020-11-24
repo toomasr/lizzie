@@ -33,6 +33,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -686,8 +688,7 @@ public class LizzieFrame extends MainFrame {
           }
         }
       } else if (Lizzie.config.showStatus) {
-        //String loadingText = resourceBundle.getString("LizzieFrame.display.loading");
-        //drawPonderingState(g, loadingText, loadingX, loadingY, loadingSize);
+        drawPonderingState(g, loadingText(), loadingX, loadingY, loadingSize);
       }
 
       if (Lizzie.config.showCaptured) drawCaptured(g, capx, capy, capw, caph);
@@ -929,8 +930,8 @@ public class LizzieFrame extends MainFrame {
 
     Leelaz.WinrateStats stats = Lizzie.leelaz.getWinrateStats();
     double curWR = stats.maxWinrate; // winrate on this move
-    double curSM = stats.maxScoreMean; // mean score on this move
     boolean validWinrate = (stats.totalPlayouts > 0); // and whether it was actually calculated
+    boolean validScore = validWinrate;
     if (!validWinrate) {
       curWR = Lizzie.board.getHistory().getData().winrate;
       validWinrate = Lizzie.board.getHistory().getData().getPlayouts() > 0;
@@ -943,13 +944,11 @@ public class LizzieFrame extends MainFrame {
     if (!validWinrate) {
       curWR = 100 - lastWR; // display last move's winrate for now (with color difference)
     }
-    double whiteWR, blackWR, blackSM;
+    double whiteWR, blackWR;
     if (Lizzie.board.getData().blackToPlay) {
       blackWR = curWR;
-      blackSM = curSM;
     } else {
       blackWR = 100 - curWR;
-      blackSM = -curSM;
     }
 
     whiteWR = 100 - blackWR;
@@ -986,7 +985,7 @@ public class LizzieFrame extends MainFrame {
     setPanelFont(g, (int) (min(width, height) * 0.2));
 
     String text = "";
-    if (Lizzie.leelaz.isKataGo) {
+    if (Lizzie.leelaz.isKataGo && validScore) {
       double score = Lizzie.leelaz.scoreMean;
       if (Lizzie.board.getHistory().isBlacksTurn()) {
         if (Lizzie.config.showKataGoBoardScoreMean) {
@@ -1039,8 +1038,8 @@ public class LizzieFrame extends MainFrame {
 
     if (validWinrate || validLastWinrate) {
       int maxBarwidth = (int) (width);
-      int barWidthB = (int) (blackWR * maxBarwidth / 100);
-      int barWidthW = (int) (whiteWR * maxBarwidth / 100);
+      int barWidthB = (int) (Math.max(0, Math.min(blackWR, 100)) * maxBarwidth / 100);
+      int barWidthW = (int) (Math.max(0, Math.min(whiteWR, 100)) * maxBarwidth / 100);
       int barPosY = posY + height / 3;
       int barPosxB = (int) (posX);
       int barPosxW = barPosxB + barWidthB;
@@ -1063,14 +1062,6 @@ public class LizzieFrame extends MainFrame {
           winString,
           barPosxB + maxBarwidth - sw - 2 * strokeRadius,
           posY + barHeight - 2 * strokeRadius);
-      if (Lizzie.leelaz.isKataGo) {
-        String scoreString = String.format("%.1f", blackSM);
-        sw = g.getFontMetrics().stringWidth(scoreString);
-        g.drawString(
-            scoreString,
-            barPosxB + maxBarwidth / 2 - sw / 2 - strokeRadius,
-            posY + barHeight - 2 * strokeRadius);
-      }
 
       g.setColor(Color.GRAY);
       Stroke oldstroke = g.getStroke();
@@ -1198,9 +1189,6 @@ public class LizzieFrame extends MainFrame {
       isPlayingAgainstLeelaz = false;
       Lizzie.board.goToMoveNumberBeyondBranch(moveNumber);
     }
-    if (Lizzie.config.showSubBoard && subBoardRenderer.isInside(x, y)) {
-      Lizzie.config.toggleLargeSubBoard();
-    }
     if (Lizzie.config.showVariationGraph) {
       variationTree.onClicked(x, y);
     }
@@ -1220,6 +1208,20 @@ public class LizzieFrame extends MainFrame {
         }
       }
     }
+  }
+
+  public boolean subBoardOnClick(MouseEvent e) {
+    int x = e.getX();
+    int y = e.getY();
+    if (Lizzie.config.showSubBoard && subBoardRenderer.isInside(x, y)) {
+      if (e.getButton() == MouseEvent.BUTTON1) subBoardRenderer.increaseBestmoveIndexSub(1);
+      if (e.getButton() == MouseEvent.BUTTON3) subBoardRenderer.increaseBestmoveIndexSub(-1);
+      if (e.getButton() == MouseEvent.BUTTON2) Lizzie.config.toggleLargeSubBoard();
+      subBoardRenderer.setClickedSub(true);
+      repaint();
+      return true;
+    }
+    return false;
   }
 
   private final Consumer<String> placeVariation =
@@ -1246,6 +1248,17 @@ public class LizzieFrame extends MainFrame {
     if (!coords.isPresent() && boardRenderer.isShowingBranch()) {
       repaint();
     }
+    if (Lizzie.config.showSubBoard && subBoardRenderer.isInside(x, y)) {
+      if (!subBoardRenderer.getIsMouseOverSub()) {
+        subBoardRenderer.setIsMouseOverSub(true);
+        repaint();
+      }
+    } else {
+      if (subBoardRenderer.getIsMouseOverSub()) {
+        Lizzie.frame.clearIsMouseOverSub();
+        repaint();
+      }
+    }
   }
 
   public boolean isMouseOver(int x, int y) {
@@ -1271,18 +1284,14 @@ public class LizzieFrame extends MainFrame {
     }
   }
 
-  private void setDisplayedBranchLength(int n) {
-    boardRenderer.setDisplayedBranchLength(n);
-  }
-
   public void startRawBoard() {
     boolean onBranch = boardRenderer.isShowingBranch();
     int n = (onBranch ? 1 : BoardRenderer.SHOW_RAW_BOARD);
-    boardRenderer.setDisplayedBranchLength(n);
+    Utils.setDisplayedBranchLength(boardRenderer, n);
   }
 
   public void stopRawBoard() {
-    boardRenderer.setDisplayedBranchLength(BoardRenderer.SHOW_NORMAL_BOARD);
+    Utils.setDisplayedBranchLength(boardRenderer, BoardRenderer.SHOW_NORMAL_BOARD);
   }
 
   public boolean incrementDisplayedBranchLength(int n) {
@@ -1344,7 +1353,7 @@ public class LizzieFrame extends MainFrame {
             int secs = (int) (Lizzie.config.replayBranchIntervalSeconds * 1000);
             for (int i = 1; i < replaySteps + 1; i++) {
               if (!isReplayVariation) break;
-              setDisplayedBranchLength(i);
+              Utils.setDisplayedBranchLength(boardRenderer, i);
               repaint();
               try {
                 Thread.sleep(secs);
@@ -1352,7 +1361,7 @@ public class LizzieFrame extends MainFrame {
                 e.printStackTrace();
               }
             }
-            boardRenderer.setDisplayedBranchLength(oriBranchLength);
+            Utils.setDisplayedBranchLength(boardRenderer, oriBranchLength);
             isReplayVariation = false;
             if (!Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
           }
@@ -1474,5 +1483,36 @@ public class LizzieFrame extends MainFrame {
 
   private void showMenu(int x, int y) {
     rightClickMenu.show(mainPanel, x, y);
+  }
+
+  @Override
+  public void clearBeforeMove() {
+    // TODO Auto-generated method stub
+    subBoardRenderer.clearBeforeMove();
+    if (Lizzie.frame.isEstimating) {
+      Lizzie.frame.noEstimateByZen(false);
+    }
+  }
+
+  @Override
+  public void clearIsMouseOverSub() {
+    // TODO Auto-generated method stub
+    subBoardRenderer.setIsMouseOverSub(false);
+    Utils.setDisplayedBranchLength(subBoardRenderer, -2);
+  }
+
+  public boolean processSubBoardMouseWheelMoved(MouseWheelEvent e) {
+    int x = e.getX();
+    int y = e.getY();
+    if (Lizzie.config.showSubBoard && subBoardRenderer.isInside(x, y)) {
+      if (e.getWheelRotation() > 0) {
+        Utils.doBranchSub(subBoardRenderer, 1);
+        repaint();
+      } else if (e.getWheelRotation() < 0) {
+        Utils.doBranchSub(subBoardRenderer, -1);
+        repaint();
+      }
+      return true;
+    } else return false;
   }
 }

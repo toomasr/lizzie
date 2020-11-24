@@ -1,4 +1,5 @@
 # Lizzie - Leela Zero Interface
+
 ![screenshot](https://raw.githubusercontent.com/featurecat/lizzie/master/screenshot0.7.jpg?raw=true)
 
 Lizzie is a graphical interface allowing the user to analyze games in
@@ -10,9 +11,8 @@ Lizzie requires Java 8 or later to run.
 
 ## Running a Release
 
-Every [release](https://github.com/featurecat/lizzie/releases/tag/0.7.2) has a
-`README.txt` file in the archive. Follow the steps in that file
-for a complete setup guide.
+Just follow the instructions in the provided readme in the
+[release](https://github.com/featurecat/lizzie/releases/tag/0.7.4).
 
 The first run may take a while because Leela Zero needs to set up the
 OpenCL tunings. Just hang tight, and wait for it to finish, then you

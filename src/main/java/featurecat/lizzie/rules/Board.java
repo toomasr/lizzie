@@ -473,9 +473,7 @@ public class Board implements LeelazListener {
    * @param newBranch add a new branch
    */
   public void place(int x, int y, Stone color, boolean newBranch, boolean changeMove) {
-    if (Lizzie.frame.isEstimating) {
-      Lizzie.frame.noEstimateByZen(false);
-    }
+    Lizzie.frame.clearBeforeMove();
     synchronized (this) {
       if (scoreMode) {
         // Mark clicked stone as dead
@@ -758,9 +756,7 @@ public class Board implements LeelazListener {
 
   /** Goes to the next coordinate, thread safe */
   public boolean nextMove() {
-    if (Lizzie.frame.isEstimating) {
-      Lizzie.frame.noEstimateByZen(false);
-    }
+    Lizzie.frame.clearBeforeMove();
     synchronized (this) {
       updateWinrate();
       Lizzie.leelaz.beginModifyingBoard();
@@ -813,8 +809,11 @@ public class Board implements LeelazListener {
   /** Save the back routing from children */
   public void saveBackRouting(BoardHistoryNode node) {
     Optional<BoardHistoryNode> prev = node.previous();
-    prev.ifPresent(n -> n.setFromBackChildren(n.getVariations().indexOf(node)));
-    prev.ifPresent(n -> n.previous().ifPresent(p -> saveBackRouting(p)));
+    prev.ifPresent(
+        n -> {
+          n.setFromBackChildren(n.getVariations().indexOf(node));
+          saveBackRouting(n);
+        });
   }
 
   /** Restore move number by saved node */
@@ -1116,9 +1115,7 @@ public class Board implements LeelazListener {
 
   /** Goes to the previous coordinate, thread safe */
   public boolean previousMove() {
-    if (Lizzie.frame.isEstimating) {
-      Lizzie.frame.noEstimateByZen(false);
-    }
+    Lizzie.frame.clearBeforeMove();
     synchronized (this) {
       if (inScoreMode()) setScoreMode(false);
       updateWinrate();
@@ -1465,9 +1462,6 @@ public class Board implements LeelazListener {
     Leelaz.WinrateStats stats = Lizzie.leelaz.getWinrateStats();
     if (stats.maxWinrate >= 0 && stats.totalPlayouts > history.getData().getPlayouts()) {
       history.getData().winrate = stats.maxWinrate;
-      if (Lizzie.leelaz.isKataGo) {
-        history.getData().scoreMean = stats.maxScoreMean;
-      }
       // we won't set playouts here. but setting winrate is ok... it shows the user that we are
       // computing. i think its fine.
     }

@@ -20,7 +20,7 @@ public class Lizzie {
   public static GtpConsolePane gtpConsole;
   public static Board board;
   public static Leelaz leelaz;
-  public static String lizzieVersion = "0.7.2";
+  public static String lizzieVersion = "0.7.4";
   private static String[] mainArgs;
   public static EngineManager engineManager;
 
@@ -33,6 +33,10 @@ public class Lizzie {
     gtpConsole = new GtpConsolePane(frame);
     gtpConsole.setVisible(config.leelazConfig.optBoolean("print-comms", false));
 
+    initializeEngineManager();
+  }
+
+  public static void initializeEngineManager() {
     try {
       engineManager = new EngineManager(config);
     } catch (IOException e) {
@@ -43,6 +47,8 @@ public class Lizzie {
       frame.loadFile(new File(mainArgs[0]));
     } else if (config.config.getJSONObject("ui").getBoolean("resume-previous-game")) {
       board.resumePreviousGame();
+      JOptionPane.showMessageDialog(frame, "Please restart Lizzie to apply changes.");
+      System.exit(1);
     }
   }
 
