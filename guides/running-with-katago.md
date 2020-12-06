@@ -50,8 +50,20 @@ ssh toomasr@192.168.1.131 "/home/toomasr/projects/KataGo/cpp/katago gtp -config 
 
 Now for this to work you need to make sure that this command works. First of all you need non-interactive SSH authentication. This [SSH Public Key Auth Tutorial](https://kb.iu.edu/d/aews) looks good enough to get you started.
 
+![Running the KataGo Remote Command](https://github.com/toomasr/lizzie/blob/master/guides/images/katago-remote-commandline.png?raw=true)
+
 ## Configure Lizzie to Use the Command
-	Ahaaa!
+	
+	We now have a command that will launch KataGo locally or remotely and next step is to use this command to setup an engine inside the Lizzie interface. Head over to ```Settings``` menu and open ```Engine``` from there.
+
+![Managing Engines in Lizzie](https://github.com/toomasr/lizzie/blob/master/guides/images/lizzie-engines-configuration.png?raw=true)
+
+On the screenshot I have defined 3 engines. The second engine is a local KataGo and the third one is my remote KataGo.
+
+Once you have these defined you can head over to ```Engines``` in the main menu and you should see a list. They are numbered by the numbers in the configuration.
+
+![Managing Engines in Lizzie](https://github.com/toomasr/lizzie/blob/master/guides/images/lizzie-engines.png?raw=true)
+
 
 ## Analyze a Game
 	Ahaaa!
