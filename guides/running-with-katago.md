@@ -56,18 +56,30 @@ Now for this to work you need to make sure that this command works. First of all
 
 ## Configure Lizzie to Use the Command
 	
-	We now have a command that will launch KataGo locally or remotely and next step is to use this command to setup an engine inside the Lizzie interface. Head over to ```Settings``` menu and open ```Engine``` from there.
+We now have a command that will launch KataGo locally or remotely and next step is to use this command to setup an engine inside the Lizzie interface. Head over to ```Settings``` menu and open ```Engine``` from there.
 
 ![Managing Engines in Lizzie](https://github.com/toomasr/lizzie/blob/master/guides/images/lizzie-engines-configuration.png?raw=true)
 
 On the screenshot I have defined 3 engines. The second engine is a local KataGo and the third one is my remote KataGo.
 
-Once you have these defined you can head over to ```Engines``` in the main menu and you should see a list. They are numbered by the numbers in the configuration.
+Once you have these defined you can head over to ```Engines``` in the main menu and you should see a list. They are numbered by the numbers in the engines configuration from the previous step.
 
 ![Lizzie Output](https://github.com/toomasr/lizzie/blob/master/guides/images/lizzie-output.png?raw=true)
 
 ![GTP Output](https://github.com/toomasr/lizzie/blob/master/guides/images/gtp-console.png?raw=true)
 
-
 ## Analyze a Game
-	Ahaaa!
+	
+Now that you have everything working you can start analysing a game. I've been using Lizzie for a year but as the program has very many options I believe I'm using just a small subset. I'll explain my main flows in the analysis and this should be enough to get you going and discovering the app more on your own.
+
+Whenever I play a game online and I have some time afterwards I download the SGF file from the server. Then I open it up on Lizzie with ```File``` &rarr; ```Open```.
+
+Then I start the engine from the ```Engine``` menu.
+
+Once the engine has loaded and initialized I navigate to ```Analyze``` &rarr; ```Auto analyze(A)```. Lizzie will ask how many playouts should it perform (higher the better but will have diminishing returns, at least on my level). I usually go for 500 or up to a 1000 depending on how much time I have. On my remote machine with GeForce RTX 2070 it takes about 3 minutes to analyse a game with 500 playouts.
+
+Once the game is analyzed I start going over it. I first look at the big mistakes. You can spot these either from the WinRateGraph or on the movepane moves that are colored red. Once I find them I also like to look at alternative moves. The moves that KataGo suggests are of course great but on my level I actually need to look at some dumber moves that KataGo has not pre analysed for me. For those I play a move on the board and then use the SPACE key on my keyboard to either turn on or off the Pondering mode of Katago.
+
+![Example Analysis](https://github.com/toomasr/lizzie/blob/master/guides/images/full-game-analysis.png?raw=true)
+
+Roughtly this is it. Auto analyse a game and then go over the game either move by move or by highlights/lowlights from the WinRateGraph.
