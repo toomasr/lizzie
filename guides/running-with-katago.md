@@ -2,41 +2,37 @@
 
 I've seen many posts asking for help on how to run KataGo with Lizzie and I thought I'll write a post about it. Feel free to contribute to this guide as you try to follow along and get your system running.
 
-In this guide I'm using Katago version 1.6.1 and 1.7.0. I'm sure it works with many more versions. For Lizzie I'm using something around version 0.7.4. As I've been compiling my own Lizzie for some time then I use my own build but it is not that far off from 0.7.4.
+In this guide I'm using KataGo version 1.6.1 and 1.7.0. I'm sure it works with many more versions. For Lizzie I'm using something around version 0.7.4. As I've been compiling my own Lizzie for some time then I use my own build but it is not that far off from 0.7.4.
 
 I will assume that you have already done some work and you have:
 
 - You have KataGo configured (see [Setting Up and Running KataGo](https://github.com/lightvector/KataGo#setting-up-and-running-katago) for details)
 - You have Lizzie running (see [Running Lizzie](https://github.com/featurecat/lizzie#running-lizzie) for details)
 
-The next steps are to define the Engine in Lizzie. Before we start doing that we should come up with a proper KataGo startup command that we'll later on add to Lizzie configuration.
+The next steps are to define the Engine in Lizzie. Before we start doing that we should come up with a proper KataGo startup command that we'll later on add to the configuration of Lizzie.
 
-I personally use 2 different setups. One is when I'm at home and I have access to my other machine with a more powerful GPU and the the other option is running KataGo on my Mac where I'm also running Lizzie from. I'll call these two respectively Local and Remote configurations.
+I personally use 2 different setups. One is where I run Lizzie and KataGo on my laptop. I'll call this my **Local Configuration**. The second is a more complex one where I run Lizzie on my local machine but KataGo on a remote machine. I'll call this **Remote Configuration**. I don't believe the Remote version is that popular but I'm including it anyways as I use it more than the local one because it takes less resources on my local machine and I can do other things while analysis is happening.
 
-Once we have prepared the command and configured the engine we'll also do a sample analysis of a game!
-
-Alright, onto prepareing the command!
+Once we have prepared the command and configured the engine we'll also do a sample analysis of a game.
 
 ## Prepare the Command
 
 ### Local Configuration
 
-KataGo requires a model file and a configuration file to run and Lizzie is talking to KataGo over GTP ([Go Text Protocol](https://en.wikipedia.org/wiki/Go_Text_Protocol)) we also need to specify the protocol.
-
-So overall the minimal command will look like this
+KataGo requires a model file and a configuration file to run and because Lizzie is talking to KataGo over GTP ([Go Text Protocol](https://en.wikipedia.org/wiki/Go_Text_Protocol)) we also need to specify the protocol in the command line. So overall the minimal command will look like this.
 
 ```katago gtp -model my-model-file.txt.gz -config my-configuration.cfg```
 
-Of course this simple example will look for ```katago``` from the current folder which won't work with Lizzie. The same is true for the configuration and the model file.
+Of course this simple example will look for ```katago``` from the current folder which won't work with Lizzie as we might run it from a multitude of different folders. The same is true for the configuration and the model file. Let's add full paths to all of these.
 
 My personal full command looks like this
 ```/Users/toomasr/projects/KataGo/cpp/katago gtp -model /Users/toomasr/Downloads/g170-b30c320x2-s4824661760-d1229536699.bin.gz -config /Users/toomasr/projects/KataGo/cpp/configs/gtp_example.cfg```
 
-As you can see I've actually downloaded the model file to my ```Downloads``` folder. You can find updated models for KataGo at their [releases](https://github.com/lightvector/KataGo/releases) page. You might have to click on ```Assets``` for a release to actually see the list of models. All KataGo relaeses are not model releases so scroll around a bit. I usually take either the largest model file or the second one in size.
+As you can see I've actually downloaded the model file to my ```Downloads``` folder. You can find updated models for KataGo at their [releases](https://github.com/lightvector/KataGo/releases) page. You might have to click on ```Assets``` for a release to actually see the list of models. All KataGo releases are not model releases so scroll around a bit. I usually take either the largest model file or the second one in size.
 
 For the KataGo configuration file I use the one that comes with KataGo and looks like this [gtp_example.cfg](https://github.com/lightvector/KataGo/blob/master/cpp/configs/gtp_example.cfg)
 
-I personally recommend testing the commandline in a terminal before starting to configure Lizzie. Also note that the first time you run the command it might print more things on the screen as it will do some tuning and then save the tuning settings and skip this process next time.
+I personally recommend testing the commandline in a terminal before starting to configure Lizzie. Also note that the first time you run the command it might print more things on the screen as it will do some tuning and then save the tuning settings and skip this process the next time.
 
 This is what I see when I run the command on my machine.
 
@@ -84,8 +80,8 @@ Then I start the engine from the ```Engine``` menu.
 
 Once the engine has loaded and initialized I navigate to ```Analyze``` &rarr; ```Auto analyze(A)```. Lizzie will ask how many playouts should it perform (higher the better but will have diminishing returns, at least on my level). I usually go for 500 or up to a 1000 depending on how much time I have. On my remote machine with GeForce RTX 2070 it takes about 3 minutes to analyse a game with 500 playouts.
 
-Once the game is analyzed I start going over it. I first look at the big mistakes. You can spot these either from the WinRateGraph or on the movepane moves that are colored red. Once I find them I also like to look at alternative moves. The moves that KataGo suggests are of course great but on my level I actually need to look at some dumber moves that KataGo has not pre analysed for me. For those I play a move on the board and then use the SPACE key on my keyboard to either turn on or off the Pondering mode of Katago.
+Once the game is analyzed I start going over it. I first look at the big mistakes. You can spot these either from the WinRateGraph or on the movepane moves that are colored red. Once I find them I also like to look at alternative moves. The moves that KataGo suggests are of course great but on my level I actually need to look at some dumber moves that KataGo has not pre analysed for me. For those I play a move on the board and then use the SPACE key on my keyboard to either turn on or off the Pondering mode of KataGo.
 
 ![Example Analysis](https://github.com/toomasr/lizzie/blob/master/guides/images/full-game-analysis.png?raw=true)
 
-Roughtly this is it. Auto analyse a game and then go over the game either move by move or by highlights/lowlights from the WinRateGraph.
+Roughly this is it. Auto analyse a game and then go over the game either move by move or by highlights/lowlights from the WinRateGraph.
