@@ -2,7 +2,9 @@
 
 I've seen many posts asking for help on how to run KataGo with Lizzie and I thought I'll write a post about it. Feel free to contribute to this guide as you try to follow along and get your system running.
 
-I will assume that
+In this guide I'm using Katago version 1.6.1 and 1.7.0. I'm sure it works with many more versions. For Lizzie I'm using something around version 0.7.4. As I've been compiling my own Lizzie for some time then I use my own build but it is not that far off from 0.7.4.
+
+I will assume that you have already done some work and you have:
 
 - You have KataGo configured (see [Setting Up and Running KataGo](https://github.com/lightvector/KataGo#setting-up-and-running-katago) for details)
 - You have Lizzie running (see [Running Lizzie](https://github.com/featurecat/lizzie#running-lizzie) for details)
@@ -10,6 +12,10 @@ I will assume that
 The next steps are to define the Engine in Lizzie. Before we start doing that we should come up with a proper KataGo startup command that we'll later on add to Lizzie configuration.
 
 I personally use 2 different setups. One is when I'm at home and I have access to my other machine with a more powerful GPU and the the other option is running KataGo on my Mac where I'm also running Lizzie from. I'll call these two respectively Local and Remote configurations.
+
+Once we have prepared the command and configured the engine we'll also do a sample analysis of a game!
+
+Alright, onto prepareing the command!
 
 ## Prepare the Command
 
