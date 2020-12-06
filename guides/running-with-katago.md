@@ -36,6 +36,8 @@ This is what I see when I run the command on my machine.
 
 ![Running the KataGo Command](https://github.com/toomasr/lizzie/blob/master/guides/images/katago-commandline.png?raw=true)
 
+I have included 2 screenshots. One is from the terminal where I prefer to run Lizzie from and the other one is the GTP console from inside Lizzie. Your output will vary but this is what it looks like for a successful setup.
+
 ### Remote Configuration
 
 The remote configuration is fairly similar. You need to have a working command at the other machine and you need to test it there. Once it is working on the remote machine I just use SSH to run the command over there.
@@ -62,7 +64,9 @@ On the screenshot I have defined 3 engines. The second engine is a local KataGo 
 
 Once you have these defined you can head over to ```Engines``` in the main menu and you should see a list. They are numbered by the numbers in the configuration.
 
-![Managing Engines in Lizzie](https://github.com/toomasr/lizzie/blob/master/guides/images/lizzie-engines.png?raw=true)
+![Lizzie Output](https://github.com/toomasr/lizzie/blob/master/guides/images/lizzie-output.png?raw=true)
+
+![GTP Output](https://github.com/toomasr/lizzie/blob/master/guides/images/gtp-console.png?raw=true)
 
 
 ## Analyze a Game
