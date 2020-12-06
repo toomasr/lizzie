@@ -1,4 +1,4 @@
-#Running Lizzie with KataGo
+# Running Lizzie with KataGo
 
 I've seen many posts asking for help on how to run KataGo with Lizzie and I thought I'll write a post about it. Feel free to contribute to this guide as you try to follow along and get your system running.
 
@@ -7,3 +7,51 @@ I will assume that
 - You have KataGo configured (see [Setting Up and Running KataGo](https://github.com/lightvector/KataGo#setting-up-and-running-katago) for details)
 - You have Lizzie running (see [Running Lizzie](https://github.com/featurecat/lizzie#running-lizzie) for details)
 
+The next steps are to define the Engine in Lizzie. Before we start doing that we should come up with a proper KataGo startup command that we'll later on add to Lizzie configuration.
+
+I personally use 2 different setups. One is when I'm at home and I have access to my other machine with a more powerful GPU and the the other option is running KataGo on my Mac where I'm also running Lizzie from. I'll call these two respectively Local and Remote configurations.
+
+## Prepare the Command
+
+### Local Configuration
+
+KataGo requires a model file and a configuration file to run and Lizzie is talking to KataGo over GTP ([Go Text Protocol](https://en.wikipedia.org/wiki/Go_Text_Protocol)) we also need to specify the protocol.
+
+So overall the minimal command will look like this
+
+```katago gtp -model my-model-file.txt.gz -config my-configuration.cfg```
+
+Of course this simple example will look for ```katago``` from the current folder which won't work with Lizzie. The same is true for the configuration and the model file.
+
+My personal full command looks like this
+```/Users/toomasr/projects/KataGo/cpp/katago gtp -model /Users/toomasr/Downloads/g170-b30c320x2-s4824661760-d1229536699.bin.gz -config /Users/toomasr/projects/KataGo/cpp/configs/gtp_example.cfg```
+
+As you can see I've actually downloaded the model file to my ```Downloads``` folder. You can find updated models for KataGo at their [releases](https://github.com/lightvector/KataGo/releases) page. You might have to click on ```Assets``` for a release to actually see the list of models. All KataGo relaeses are not model releases so scroll around a bit. I usually take either the largest model file or the second one in size.
+
+For the KataGo configuration file I use the one that comes with KataGo and looks like this [gtp_example.cfg](https://github.com/lightvector/KataGo/blob/master/cpp/configs/gtp_example.cfg)
+
+I personally recommend testing the commandline in a terminal before starting to configure Lizzie. Also note that the first time you run the command it might print more things on the screen as it will do some tuning and then save the tuning settings and skip this process next time.
+
+This is what I see when I run the command on my machine.
+
+![Running the KataGo Command](https://github.com/toomasr/lizzie/blob/master/guides/images/katago-commandline.png?raw=true)
+
+### Remote Configuration
+
+The remote configuration is fairly similar. You need to have a working command at the other machine and you need to test it there. Once it is working on the remote machine I just use SSH to run the command over there.
+
+I've defined a wrapper ```katago-analysis-remote.sh``` which has the following contents
+
+```bash
+#!/bin/bash
+
+ssh toomasr@192.168.1.131 "/home/toomasr/projects/KataGo/cpp/katago gtp -config /home/toomasr/projects/KataGo/cpp/configs/analysis_example.cfg"
+```
+
+Now for this to work you need to make sure that this command works. First of all you need non-interactive SSH authentication. This [SSH Public Key Auth Tutorial](https://kb.iu.edu/d/aews) looks good enough to get you started.
+
+## Configure Lizzie to Use the Command
+	Ahaaa!
+
+## Analyze a Game
+	Ahaaa!
