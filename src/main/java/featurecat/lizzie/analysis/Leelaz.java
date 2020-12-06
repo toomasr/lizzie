@@ -766,9 +766,7 @@ public class Leelaz {
   }
 
   public List<MoveData> getBestMoves() {
-    synchronized (this) {
-      return bestMoves;
-    }
+    return bestMoves;
   }
 
   public Optional<String> getDynamicKomi() {
