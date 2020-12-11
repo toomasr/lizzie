@@ -7,6 +7,12 @@
     <groupId>featurecat</groupId>
     <artifactId>lizzie</artifactId>
     <version>0.7.4</version>
+    
+	  <scm>
+	    <connection>scm:git:git@github.com:featurecat/lizzie.git</connection>
+	    <url>scm:git:git@github.com:featurecat/lizzie.git</url>
+	    <developerConnection>scm:git:git@github.com:featurecat/lizzie.git</developerConnection>
+	  </scm>
 
     <properties>
         <!-- Prevent warning: "[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!"-->
@@ -27,11 +33,46 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+			      <plugin>
+			          <groupId>org.codehaus.mojo</groupId>
+			          <artifactId>buildnumber-maven-plugin</artifactId>
+			          <version>1.4</version>
+			          <executions>
+			              <execution>
+			                  <phase>validate</phase>
+			                  <goals><goal>create</goal></goals>
+			              </execution>
+			          </executions>
+			          <configuration>
+			              <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+			              <attach>true</attach>
+			              <addOutputDirectoryToResources>true</addOutputDirectoryToResources>
+			              <shortRevisionLength>8</shortRevisionLength>
+			          </configuration>
+			      </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
-                <!-- No need to specify the main class since maven-shade-plugin will add it. -->
+                <configuration>
+                  <archive>
+                    <index>true</index>
+                    <manifestEntries>
+                      <Main-Class>com.toomasr.sgf4j.PseudoMain</Main-Class>
+                    </manifestEntries>
+                      <manifestSections>
+                        <manifestSection>
+                            <name>Lizzie Build Information</name>
+                            <manifestEntries>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-SCM-Revision>${buildNumber}</Implementation-SCM-Revision>
+                                <Implementation-SCM-Branch>${scmBranch}</Implementation-SCM-Branch>
+                                <Build-Time>${maven.build.timestamp}</Build-Time>
+                            </manifestEntries>
+                        </manifestSection>
+                    </manifestSections>
+                  </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

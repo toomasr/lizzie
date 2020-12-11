@@ -9,6 +9,11 @@ import featurecat.lizzie.gui.MainFrame;
 import featurecat.lizzie.rules.Board;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -26,6 +31,9 @@ public class Lizzie {
 
   /** Launches the game window, and runs the game. */
   public static void main(String[] args) throws IOException {
+    String verInfo = extractVersionFromManifest();
+    System.out.println("Build: " + verInfo);
+
     setLookAndFeel();
     mainArgs = args;
     config = new Config();
@@ -98,5 +106,45 @@ public class Lizzie {
 
     if (leelaz != null) leelaz.shutdown();
     System.exit(0);
+  }
+
+  private static String extractVersionFromManifest() {
+    String rtrn = "";
+    try {
+      Enumeration<URL> resources =
+          Lizzie.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+      while (resources.hasMoreElements()) {
+        try {
+          Manifest manifest = new Manifest(resources.nextElement().openStream());
+          // check that this is your manifest and do what you need or get the next one
+          Map<String, Attributes> entries = manifest.getEntries();
+          final String key = "Lizzie Build Information";
+          if (entries.size() > 0 && key.equals(entries.keySet().iterator().next())) {
+            String implVersion = entries.get(key).getValue("Implementation-Version");
+            String implRevision = entries.get(key).getValue("Implementation-SCM-Revision");
+            String implBranch = entries.get(key).getValue("Implementation-SCM-Branch");
+            String implBuildtime = entries.get(key).getValue("Build-Time");
+            if (!"null".equals(implVersion)) {
+              rtrn += implVersion + "; ";
+            }
+            if (!"null".equals(implRevision)) {
+              rtrn += implRevision + "; ";
+            }
+            if (!"null".equals(implBranch)) {
+              rtrn += implBranch + "; ";
+            }
+            if (!"null".equals(implBuildtime)) {
+              rtrn += implBuildtime + "; ";
+            }
+          }
+
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return rtrn;
   }
 }
