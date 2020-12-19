@@ -325,7 +325,9 @@ public abstract class MainFrame extends JFrame {
       }
       try {
         SGFParser.save(Lizzie.board, file.getPath());
-        filesystem.put("last-folder", file.getParent());
+        if (file.getParent() != null) {
+          filesystem.put("last-folder", file.getParent());
+        }
       } catch (IOException err) {
         JOptionPane.showConfirmDialog(
             null,
@@ -361,7 +363,9 @@ public abstract class MainFrame extends JFrame {
       } else {
         GIBParser.load(file.getPath());
       }
-      filesystem.put("last-folder", file.getParent());
+      if (file.getParent() != null) {
+        filesystem.put("last-folder", file.getParent());
+      }
     } catch (IOException err) {
       JOptionPane.showConfirmDialog(
           null,
